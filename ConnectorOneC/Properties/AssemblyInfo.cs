@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CorPortalWcfService")]
+[assembly: AssemblyTitle("ConecctorOneC")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CorPortalWcfService")]
+[assembly: AssemblyProduct("ConecctorOneC")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bff9ee32-2aef-4ab0-98da-e063e89bad68")]
+[assembly: Guid("44ec6ca2-9eb7-48a3-8f13-60c8f98b3563")]
 
 // Version information for an assembly consists of the following four values:
 //
