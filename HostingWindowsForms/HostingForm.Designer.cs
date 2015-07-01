@@ -1,6 +1,6 @@
 ﻿namespace HostingWindowsForms
 {
-    partial class Form1
+    partial class HostingForm
     {
         /// <summary>
         /// Required designer variable.
