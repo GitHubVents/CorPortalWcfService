@@ -1,5 +1,10 @@
 ﻿using System.ServiceModel;
-
+using ConecctorOneC;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace HostingWindowsForms
 {
@@ -8,6 +13,6 @@ namespace HostingWindowsForms
     public interface IVentsService
     {
         [OperationContract]
-        void DoWork();
+        List<Connection.ClassifierMeasure> GetList();
     }
 }

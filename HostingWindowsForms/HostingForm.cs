@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
-
+using ConecctorOneC;
 using System.Windows.Forms;
 
 namespace HostingWindowsForms
@@ -15,8 +15,14 @@ namespace HostingWindowsForms
         private ServiceHost host;
         private void Form1_Load(object sender, EventArgs e)
         {
-            //host = new ServiceHost(typeof(CorPortalWcfService.Service1));
-           // host.Open();
+            host = new ServiceHost(typeof(VentsService));
+           
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            host.Open();
+            label1.Text = "Ok";
         }
     }
 }
