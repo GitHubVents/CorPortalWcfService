@@ -33,8 +33,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SolidWorks.Interop.sldworks">
+      <HintPath>..\..\..\Program Files\SolidWorks 2013\SolidWorks\SolidWorks.Interop.sldworks.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="SolidWorks.Interop.swcommands">
+      <HintPath>..\..\..\Program Files\SolidWorks 2013\SolidWorks\SolidWorks.Interop.swcommands.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="SolidWorks.Interop.swconst">
+      <HintPath>..\..\..\Program Files\SolidWorks 2013\SolidWorks\SolidWorks.Interop.swconst.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -47,15 +60,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Authentication.cs" />
-    <Compile Include="EPDM.cs" />
+    <Compile Include="Authorization\Authentication.cs" />
+    <Compile Include="Data\ConnectionString.cs" />
+    <Compile Include="Data\SqlQuery.cs" />
+    <Compile Include="EPDM\ClassOfTasks.cs" />
+    <Compile Include="EPDM\EPDM.cs" />
     <Compile Include="Host\HostingForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Host\HostingForm.Designer.cs">
       <DependentUpon>HostingForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="IVentsService.cs" />
     <Compile Include="Host\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VentsService.cs" />
@@ -89,6 +104,17 @@
       <Project>{bb520393-884d-4c9e-9dd2-12d11ae850d0}</Project>
       <Name>ConnectorOneC</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="EdmLib">
+      <Guid>{5FA2C692-8393-4F31-9BDB-05E6F807D0D3}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>16</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

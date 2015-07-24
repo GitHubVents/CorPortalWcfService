@@ -4,20 +4,20 @@ namespace ConecctorOneC
 {
     public class Connection
     {
-        public dynamic Result;
+        static public dynamic Result;
 
-        public dynamic ConnectionString()
+        static public dynamic ConnectionString()
         {
-            var com1S = new V82.COMConnector
+            var com1S = new V83.COMConnector
             {
                 PoolCapacity = 10,
                 PoolTimeout = 60,
                 MaxConnections = 2
             };
 
-            Result = com1S.Connect(@"File='\\srvkb\SolidWorks Admin\TEMP\1C_Test';Usr='Админенко (администратор)';pwd='';");
+            //Result = com1S.Connect(@"File='\\srvkb\SolidWorks Admin\TEMP\1C_Test';Usr='Админенко (администратор)';pwd='';");
             //Result = com1S.Connect(@"File='C:\1C_test_base';Usr='Админенко (администратор)';pwd='';");
-            //Result = com1S.Connect("srvr='Srvprog:1641'; ref='Yurchenko_new'; usr='Орел Денис'; pwd='1450'");
+            Result = com1S.Connect("srvr='Srvprog'; ref='Yurchenko_new'; usr='com-user'; pwd='1'");
             return Result;
         }
 
@@ -60,7 +60,6 @@ namespace ConecctorOneC
            // public string Code { get; set; }
            // public string DescriptionFull { get; set; }
             public string Description { get; set; }
-
         }
 
         public List<GroupnOfNomenclature> GroupnOfNomenclatureList()
@@ -113,11 +112,11 @@ namespace ConecctorOneC
             return value;
         }
 
-        public List<Nomenclature> SearchNomenclatureName(string name)
+        public List<Nomenclature> SearchNomenclatureByName(string name)
         {
             var list = new List<Nomenclature>();
             dynamic qr = Result.NewObject("Запрос");
-            qr.Текст = "ВЫБРАТЬ * ИЗ Справочник.Номенклатура КАК Спр ГДЕ (Спр.Наименование ПОДОБНО &Наименование)";
+            qr.Текст = "ВЫБРАТЬ первые 50 * ИЗ Справочник.Номенклатура КАК Спр ГДЕ (Спр.Наименование ПОДОБНО &Наименование)";
             qr.УстановитьПараметр("Наименование", "%" + name + "%");
 
             dynamic выборка = qr.Выполнить().Выбрать();
@@ -138,33 +137,37 @@ namespace ConecctorOneC
         public void Nomen()
         {
             //Получим ссылку на номенклатуру по её коду
-            dynamic meta = Result.Справочники.Номенклатура.НайтиПоКоду("00221");
+            dynamic meta = Result.GetMeasureID_ByGoodsCode("0000228245");
 
             //А теперь из подчиненного Справочника - ЕдиницыИзмерения, запросом получим "Единицу хранения
-            dynamic query = Result.NewObject("Query");
-            query.Text =@"ВЫБРАТЬ ЕдиницыИзмерения.Ссылка КАК СсылкаНаЕдИзм, ЕдиницыИзмерения.Наименование КАК Наименование ИЗ	Справочник.ЕдиницыИзмерения КАК ЕдиницыИзмерения ГДЕ	ЕдиницыИзмерения.Владелец = &Владелец";
+            System.Windows.Forms.MessageBox.Show(meta);
 
-            //query.Text = @"ВЫБРАТЬ * ИЗ Справочник.Номенклатура";
-            
-            // Установим параметр - ВЛАДЕЛЕЦ, который используется как условие в Запросе.
-            query.SetParameter("Владелец", meta);
+            //dynamic query = Result.NewObject("Query");
+
+
+            //query.Text =@"ВЫБРАТЬ ЕдиницыИзмерения.Ссылка КАК СсылкаНаЕдИзм, ЕдиницыИзмерения.Наименование КАК Наименование ИЗ	Справочник.ЕдиницыИзмерения КАК ЕдиницыИзмерения ГДЕ	ЕдиницыИзмерения.Владелец = &Владелец";
+
+            ////query.Text = @"ВЫБРАТЬ * ИЗ Справочник.Номенклатура";
+
+            //// Установим параметр - ВЛАДЕЛЕЦ, который используется как условие в Запросе.
+            //query.SetParameter("Владелец", meta);
 
 
             // Выполним текст запроса и сразу выгрузим результат запроса в Таблицу Значений
-           //dynamic execute = query.Execute().Unload();
+            //dynamic execute = query.Execute().Unload();
 
             //if (execute.Количество() == 0)
             //{
             //    MessageBox.Show("Пусто");
             //}
 
-        //    execute[0].СсылкаНаЕдИзм
-        //    foreach (dynamic test in execute.СсылкаНаЕдИзм)
-        //    {
-        //       MessageBox.Show(test.Наименование);
-        //    }
+            //    execute[0].СсылкаНаЕдИзм
+            //    foreach (dynamic test in execute.СсылкаНаЕдИзм)
+            //    {
+            //       MessageBox.Show(test.Наименование);
+            //    }
 
-        //MessageBox.Show(execute.ВыбратьСтроку().СсылкаНаЕдИзм.ToString());
+            //MessageBox.Show(execute.ВыбратьСтроку().СсылкаНаЕдИзм.ToString());
 
             //dynamic fe = execute.ВыбратьСтроку();
 
@@ -185,13 +188,13 @@ namespace ConecctorOneC
 
 
 
-           //MessageBox.Show("Для номенклатуры: " + meta.Наименование + ", Единица измерения: " + resaltq);
+            //MessageBox.Show("Для номенклатуры: " + meta.Наименование + ", Единица измерения: " + resaltq);
 
 
 
-           // MessageBox.Show(execute);
+            // MessageBox.Show(execute);
 
-           // var test = execute.СсылкаНаЕдИзм;
+            // var test = execute.СсылкаНаЕдИзм;
             //Type type = test.GetType();
             //var str = (string)type.InvokeMember("СсылкаНаЕдИзм", BindingFlags.GetProperty, null, test, null); // 1
 
