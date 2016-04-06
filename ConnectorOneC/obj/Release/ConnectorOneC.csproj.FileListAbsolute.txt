@@ -1,0 +1,13 @@
+D:\Git\CorPortalWcfService\ConnectorOneC\bin\Release\ConnectorOneC.dll
+D:\Git\CorPortalWcfService\ConnectorOneC\bin\Release\ConnectorOneC.pdb
+D:\Git\CorPortalWcfService\ConnectorOneC\obj\Release\Interop.V83.dll
+D:\Git\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.csproj.ResolveComReference.cache
+D:\Git\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.dll
+D:\Git\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.pdb
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\bin\Release\ConnectorOneC.dll
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\bin\Release\ConnectorOneC.pdb
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.csprojResolveAssemblyReference.cache
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\obj\Release\Interop.V83.dll
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.csproj.ResolveComReference.cache
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.dll
+D:\C#Projects2015\WCF\CorPortalWcfService\ConnectorOneC\obj\Release\ConnectorOneC.pdb

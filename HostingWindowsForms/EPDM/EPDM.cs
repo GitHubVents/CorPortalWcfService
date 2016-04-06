@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data;
-using System.Windows.Forms;
+using System.Linq;
 using EdmLib;
+using HostingWindowsForms.Data;
+using System.Windows.Forms;
 
 namespace HostingWindowsForms
 {
     public class EPDM
     {
         public IEdmFile7 EdmFile7;
-
         #region Поля 
 
         public int BomId { get; set; }
@@ -78,12 +77,14 @@ namespace HostingWindowsForms
         //}
 
         #endregion
-
         public IEnumerable<string> GetConfiguration(string filePath)
         {
             
             var oFolder = default(IEdmFolder5);
-            var edmFile5 = HostingForm.Vault1.GetFileFromPath(filePath, out oFolder);
+
+            CheckPdmVault();
+
+            var edmFile5 = Vault1.GetFileFromPath(filePath, out oFolder);
             var configs = edmFile5.GetConfigurations("");
 
             var headPosition = configs.GetHeadPosition();
@@ -101,7 +102,6 @@ namespace HostingWindowsForms
             return configsList;
 
         }
-
         #region Методы получения листа
         public class SearchColumnName
         {
@@ -116,11 +116,41 @@ namespace HostingWindowsForms
             public string FilePath { get; set; }
         }
 
+
+        private EdmVault5 Vault1;
+        private IEdmVault7 Vault2;
+
+        void CheckPdmVault()
+        {
+            try
+            {
+                if (Vault1 == null)
+                {
+                    Vault1 = new EdmVault5();
+                }
+
+                Vault2 = (IEdmVault7)Vault1;
+
+                var ok = Vault1.IsLoggedIn;
+
+                if (!ok)
+                {
+                    Vault1.LoginAuto("Vents-PDM", 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "; " + ex.StackTrace);
+            }
+        }
+
         public List<SearchColumnName> SearchDoc(string name)
         {
             var namedoc = new List<SearchColumnName>();
 
-            var search = (IEdmSearch5)HostingForm.Vault2.CreateUtility(EdmUtility.EdmUtil_Search);
+            CheckPdmVault();
+            
+            var search = (IEdmSearch5)Vault2.CreateUtility(EdmUtility.EdmUtil_Search);
 
             search.FindFiles = true;
             search.FindFolders = false;
@@ -131,14 +161,12 @@ namespace HostingWindowsForms
             
             while ((result != null))
             {
-
                 var columnClass = new SearchColumnName()
                 {
                     FileName = result.Name,
                     FileId = result.ID,
                     FolderId = result.ParentFolderID,
                     FilePath = result.Path
-
                 };
 
                 namedoc.Add(columnClass);
@@ -149,12 +177,11 @@ namespace HostingWindowsForms
             return namedoc;
         }
 
-
         void Getbom(int bomId, string filePath,  string bomConfiguration)
         {
             var oFolder = default(IEdmFolder5);
-            EdmFile7 = (IEdmFile7)HostingForm.Vault1.GetFileFromPath(filePath, out oFolder);
-
+            CheckPdmVault();
+            EdmFile7 = (IEdmFile7)Vault1.GetFileFromPath(filePath, out oFolder);
             
             var bomView = EdmFile7.GetComputedBOM(Convert.ToInt32(bomId), Convert.ToInt32(-1), bomConfiguration, (int)EdmBomFlag.EdmBf_ShowSelected);
 
@@ -210,7 +237,6 @@ namespace HostingWindowsForms
         }
 
         #endregion
-
         #region ДанныеДляВыгрузки - Поля с х-ками деталей
 
         List<BomCells> _bomList = new List<BomCells>();
@@ -221,7 +247,6 @@ namespace HostingWindowsForms
         {
 
             var bomList = new List<BomCells>(table.Rows.Count);
-
 
             bomList.AddRange(from DataRow row in table.Rows
                              select row.ItemArray into values
@@ -258,8 +283,7 @@ namespace HostingWindowsForms
         }
 
         #endregion
-
-        Data.SqlQuery sqlQuery = new Data.SqlQuery();
+        SqlQuery sqlQuery = new SqlQuery();
         public string GetLink(string fileName)
         {
             var url = "";
@@ -278,8 +302,6 @@ namespace HostingWindowsForms
             }
 
             return url;
-        }
-
-      
+        }  
     }
 }

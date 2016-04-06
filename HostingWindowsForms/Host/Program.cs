@@ -14,6 +14,12 @@ namespace HostingWindowsForms
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new HostingForm());
+
         }
+
+
+        static public HostingForm HostForm { get; set; }
+        
+
     }
 }

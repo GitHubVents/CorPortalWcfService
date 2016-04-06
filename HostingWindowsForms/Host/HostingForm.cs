@@ -14,15 +14,17 @@ using System.ServiceModel.Channels;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using EdmLib;
 using HostingWindowsForms.Data;
+using System.Threading;
+using Timer = System.Windows.Forms.Timer;
+using EdmLib;
 
 namespace HostingWindowsForms
 {
     public partial class HostingForm : Form
     {
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-
+        //private Thread myThread;
         //Initialize
         public HostingForm()
         {
@@ -42,10 +44,10 @@ namespace HostingWindowsForms
 
             CheckPdmVault();
 
+            Program.HostForm = this;
         }
-
         #region Fields
-        
+
         private ServiceHost host;
         private ClassOfTasks _classOdTasks;
         public EPDM Epdm;
@@ -57,7 +59,6 @@ namespace HostingWindowsForms
         public static string VaultName = @"Vents-PDM";
 
         #endregion
-
         private void HostingForm_Load(object sender, EventArgs e)
         {
             try
@@ -67,16 +68,35 @@ namespace HostingWindowsForms
 
                 Connection.ConnectionString();
 
-                _classOdTasks = new ClassOfTasks();
-                _classOdTasks.OnNewMessageChange += new ClassOfTasks.NewMessage(OnNewMessage);
-
-                //LoadMessages();
-                LoadMessagesList();
-
                 labelRun.Text = @"Работает...";
 
                 toolStripMenuRunService.Enabled = false;
-             
+                BtnStart.Enabled = false;
+
+                _classOdTasks = new ClassOfTasks();
+                _classOdTasks.OnNewMessageChataData += new ClassOfTasks.NewMessage(OnNewMessage);
+
+                LoadMessages();
+
+                /////// //\\ \\\\\\\
+                ////// ///\\\ \\\\\\
+                //\// ///  \\\ \\\/\
+                //\\ /// /\ \\\ //\\
+                /// \// //\\ \\/ \\\
+                // //\ //  \\ /\ \\
+                ///// \\ /\ // \\\\\
+                //// // \  / \\ \\\\
+                /// // / /\ \ \\ \\\
+                //\ \\ \ \/ / // ///
+                //\\ \\ /  \ // ////
+                //\\\ // \/ \\ /////
+                // \\/ \\  // \// //
+                //\ /\\ \\// //\ ///
+                //\/ \\\ \/ /// \///
+                ///\\ \\\  /// //\//
+                //\\\\ \\\/// //////
+                //\\\\\ \\// ///////
+
                 //myTimer.Tick += new EventHandler(TimerEventProcessor);
 
                 ////myTimer.Interval = 5000;
@@ -91,10 +111,9 @@ namespace HostingWindowsForms
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message + ": " + ex.StackTrace +": " + ex.Source);
             }
         }
-
         #region Timer
 
         static Timer myTimer = new Timer();
@@ -115,7 +134,6 @@ namespace HostingWindowsForms
                     //if (MessageBox.Show("Continue running?", "Count is: " + alarmCounter, MessageBoxButtons.YesNo) == DialogResult.Yes)
                     if ((hour == System.DateTime.Now.Hour) && (minute == System.DateTime.Now.Minute))
                     {
-                        MessageBox.Show("1");
                     // Restarts the timer and increments the counter.
                     //alarmCounter += 1;
                     //myTimer.Enabled = true;
@@ -148,32 +166,24 @@ namespace HostingWindowsForms
 
         }
         #endregion
-
         #region Tray icon menu
-
         private void toolStripMenuRunService_Click(object sender, EventArgs e)
         {
-
             host = new ServiceHost(typeof(VentsService));
             host.Open();
             toolStripMenuRunService.Enabled = false;
             labelRun.Text = "Работает...";
-
         }
-
         private void toolStripMenuStopService_Click(object sender, EventArgs e)
         {
             host.Close();
             toolStripMenuRunService.Enabled = true;
             labelRun.Text = "Служба остановлена";
         }
-
         private void mynotifyicon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             this.Show();
-
             this.WindowState = FormWindowState.Normal;
-
             this.ShowInTaskbar = true;
         }
 
@@ -184,103 +194,120 @@ namespace HostingWindowsForms
         }
 
         #endregion
-
         public void OnNewMessage()
         {
-            var i = (ISynchronizeInvoke)this;
-
-            // Check if the event was generated from another
-            // thread and needs invoke instead
-            if (i.InvokeRequired)
+            try
             {
-                var tempDelegate = new ClassOfTasks.NewMessage(OnNewMessage);
-                i.BeginInvoke(tempDelegate, null);
-                return;
+                var i = (ISynchronizeInvoke)this;
+
+                // Check if the event was generated from another
+                // thread and needs invoke instead
+                if (i.InvokeRequired)
+                {
+                    ClassOfTasks.NewMessage tempDelegate = new ClassOfTasks.NewMessage(OnNewMessage);
+                    i.BeginInvoke(tempDelegate, null);
+
+                    return;
+                }
+
+                // If not coming from a seperate thread
+                // we can access the Windows form controls
+                LoadMessages();
+
             }
-
-            // If not coming from a seperate thread
-            // we can access the Windows form controls
-
-            //LoadMessages();
-            LoadMessagesList();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ": " + ex.TargetSite);
+            }
         }
-        public List<string> LoadMessagesList()
+        public void LoadMessages()
         {
-            _classOdTasks = new ClassOfTasks();
+            try
+            {
+                dataGridView1.Rows.Clear();
 
-            var listStr = new List<string>();
-            listStr.Clear();
+                var dt = _classOdTasks.GetTaskListSql();
 
-            var dt = _classOdTasks.GetTaskListSql();
-
-            listStr.AddRange(from DataRow row in dt.Rows select $"{row["FolderPath"]} : {row["FileName"]}");
-
-            return listStr;
+                foreach (DataRow r in dt.Rows)
+                {
+                    dataGridView1.Rows.Add(r["FileName"].ToString().Replace(".SLDPRT", ""));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ": " + ex.TargetSite);
+            }
         }
-
         #region EPDM
         //private const string VaultName = @"Vents-PDM";
         public void CheckPdmVault()
         {
-            if (Vault1 == null)
+            try
             {
-                Vault1 = new EdmVault5();
+                if (Vault1 == null)
+                {
+                    Vault1 = new EdmVault5();
+                }
+
+                Vault2 = (IEdmVault7)Vault1;
+
+                var ok = Vault1.IsLoggedIn;
+
+                if (!ok)
+                {
+                    Vault1.LoginAuto(VaultName, 0);
+                }
             }
-
-            Vault2 = (IEdmVault7)Vault1;
-
-            var ok = Vault1.IsLoggedIn;
-
-            if (!ok)
+            catch (Exception ex)
             {
-                Vault1.LoginAuto(VaultName, 0);
+                MessageBox.Show(ex.Message + "; " + ex.StackTrace);
             }
         }
         #endregion
-
         #region Buttons
-
         private void BtnStart_Click(object sender, EventArgs e)
         {
             try
             {
-                host.Close();
-
+                if (host != null)
+                { host.Close();  }
+             
                 host = new ServiceHost(typeof(VentsService));
-
                 host.Open();
 
-                
                 _classOdTasks = new ClassOfTasks();
-                _classOdTasks.OnNewMessageChange += new ClassOfTasks.NewMessage(OnNewMessage);
+                _classOdTasks.OnNewMessageChataData += new ClassOfTasks.NewMessage(OnNewMessage);
 
-                //LoadMessages();
-
-                LoadMessagesList();
+                LoadMessages();
 
                 labelRun.Text = @"Работает...";
 
                 toolStripMenuRunService.Enabled = false;
+
+                BtnStart.Enabled = false;
             }
             catch (Exception ex)
             { MessageBox.Show(ex.Message); }
         }
-
+        
         private void BtnStopService_Click(object sender, EventArgs e)
         {
             host.Close();
             toolStripMenuRunService.Enabled = true;
+
+            //if (myThread != null)
+            //{ myThread.Abort(); }
+
             labelRun.Text = "Служба остановлена";
+
+            BtnStart.Enabled = true;
         }
-
         #endregion
-
-        private void button1_Click(object sender, EventArgs e)
+        // scroll always in botom
+        private void richTextBoxLog_TextChanged_1(object sender, EventArgs e)
         {
-            var classTask = new ClassOfTasks { HostForm = this };
-            //_classOdTasks = new ClassOfTasks();
-            classTask.RunTask();
+            richTextBoxLog.SelectionStart = richTextBoxLog.Text.Length; //Set the current caret position at the end
+            richTextBoxLog.ScrollToCaret(); //Now scroll it automatically
         }
     }
-
 }
