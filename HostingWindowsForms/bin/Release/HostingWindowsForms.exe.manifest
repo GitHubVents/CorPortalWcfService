@@ -54,14 +54,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="HostingWindowsForms.exe" size="108448">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="HostingWindowsForms.exe" size="108960">
       <assemblyIdentity name="HostingWindowsForms" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>k1TS/tPmeglV8s1nd12Zb8177frPgKE8IVHHKK9aUHQ=</dsig:DigestValue>
+        <dsig:DigestValue>eZ79exCyhp7+hDNt5Tx7pxSHfnWC4E3WM7kxANdrtO0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
